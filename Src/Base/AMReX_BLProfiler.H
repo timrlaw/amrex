@@ -469,6 +469,44 @@ inline std::string BLProfiler::CommStats::CFTToString(CommFuncType cft) {
 
 #endif
 
+// --------------------------------------------
+#elif defined(AMREX_TINY_PROFILING) && defined(AMREX_USE_CALIPER)
+
+#include <caliper/cali.h>
+
+#define BL_PROFILE_INITIALIZE()
+#define BL_PROFILE_INITPARAMS()
+#define BL_PROFILE_FINALIZE()
+
+#define BL_TINY_PROFILE_INITIALIZE()
+#define BL_TINY_PROFILE_FINALIZE()
+
+#define BL_PROFILE(fname) cali::ScopeAnnotation BL_PROFILE_PASTE(__cali_ann_,__COUNTER__)((fname))
+#define BL_PROFILE_T(a, T)
+#define BL_PROFILE_S(fname)
+#define BL_PROFILE_T_S(fname, T)
+
+#define BL_PROFILE_VAR(fname, vname)
+#define BL_PROFILE_VAR_NS(fname, vname)
+#define BL_PROFILE_VAR_START(vname)
+#define BL_PROFILE_VAR_STOP(vname)
+#define BL_PROFILE_INIT_PARAMS(ptl,wall,wfabs)
+#define BL_PROFILE_ADD_STEP(snum)
+#define BL_PROFILE_SET_RUN_TIME(rtime)
+#define BL_PROFILE_REGION(rname)
+#define BL_PROFILE_REGION_START(rname)
+#define BL_PROFILE_REGION_STOP(rname)
+//#define BL_PROFILE_REGION_START(rname)    amrex::TinyProfiler::StartRegion(rname)
+//#define BL_PROFILE_REGION_STOP(rname)     amrex::TinyProfiler::StopRegion(rname)
+#define BL_PROFILE_REGION_VAR(fname, rvname)
+#define BL_PROFILE_REGION_VAR_START(fname, rvname)
+#define BL_PROFILE_REGION_VAR_STOP(fname, rvname)
+#define BL_PROFILE_TINY_FLUSH()
+#define BL_PROFILE_FLUSH()
+#define BL_TRACE_PROFILE_FLUSH()
+#define BL_TRACE_PROFILE_SETFLUSHSIZE(fsize)
+#define BL_PROFILE_CHANGE_FORT_INT_NAME(fname, intname)
+
 
 // --------------------------------------------
 #elif defined(AMREX_TINY_PROFILING)

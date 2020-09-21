@@ -98,6 +98,12 @@ function (configure_amrex)
          $<$<CXX_COMPILER_ID:Cray>:-h;noomp> )
    endif ()
 
+   if (ENABLE_CALIPER)
+      find_package(caliper REQUIRED)
+      message(STATUS "Found caliper: ${caliper_INCLUDE_PATH}")
+      target_include_directories(amrex PUBLIC "${caliper_INCLUDE_PATH}")
+      target_link_libraries(amrex PUBLIC caliper)
+   endif ()
 
    if (ENABLE_CUDA)
       #

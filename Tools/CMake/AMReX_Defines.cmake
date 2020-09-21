@@ -69,6 +69,9 @@ function ( set_amrex_defines )
    add_amrex_define( AMREX_USE_HIP NO_LEGACY IF ENABLE_HIP )
    add_amrex_define( NDEBUG IF ENABLE_HIP)  # This address a bug that causes slow build times
 
+   # Caliper
+   add_amrex_define( AMREX_USE_CALIPER IF ENABLE_CALIPER )
+
    # Precision
    if (NOT ENABLE_DP)
       add_amrex_define(AMREX_USE_FLOAT)
