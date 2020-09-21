@@ -474,6 +474,55 @@ inline std::string BLProfiler::CommStats::CFTToString(CommFuncType cft) {
 
 #include <caliper/cali.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+namespace amrex {
+
+//! Profiling scope wrapper to handle OpenMP annotations.
+class Scope
+{
+public:
+    Scope(std::string const fname)
+    {
+        bool in_omp_par_reg = false;
+#ifdef _OPENMP
+        in_omp_par_reg = omp_in_parallel();
+#endif
+
+        if (in_omp_par_reg) {
+            cali_begin_string_byname("annotation", fname.c_str());
+        }
+        else {
+#ifdef _OPENMP
+            #pragma omp parallel
+            cali_begin_string_byname("annotation", fname.c_str());
+#endif
+        }
+    }
+
+    ~Scope()
+    {
+        bool in_omp_par_reg = false;
+#ifdef _OPENMP
+        in_omp_par_reg = omp_in_parallel();
+#endif
+
+        if (in_omp_par_reg) {
+            cali_end_byname("annotation");
+        }
+        else {
+#ifdef _OPENMP
+            #pragma omp parallel
+            cali_end_byname("annotation");
+#endif
+        }
+    }
+};
+
+} // namespace amrex
+
 #define BL_PROFILE_INITIALIZE()
 #define BL_PROFILE_INITPARAMS()
 #define BL_PROFILE_FINALIZE()
@@ -481,7 +530,7 @@ inline std::string BLProfiler::CommStats::CFTToString(CommFuncType cft) {
 #define BL_TINY_PROFILE_INITIALIZE()
 #define BL_TINY_PROFILE_FINALIZE()
 
-#define BL_PROFILE(fname) cali::ScopeAnnotation BL_PROFILE_PASTE(__cali_ann_,__COUNTER__)((fname))
+#define BL_PROFILE(fname) amrex::Scope BL_PROFILE_PASTE(__cali_ann_,__COUNTER__)((fname))
 #define BL_PROFILE_T(a, T)
 #define BL_PROFILE_S(fname)
 #define BL_PROFILE_T_S(fname, T)
